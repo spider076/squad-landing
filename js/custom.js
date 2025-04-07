@@ -396,27 +396,21 @@ function init() {
 }
 
 function animateIn($item, $block) {
-	var $nrX = 360 * getRandomInt(2);
 	var $nrY = 360 * getRandomInt(2);
-
-	var $nx = -2000 + getRandomInt(4000);
-	var $ny = -2000 + getRandomInt(4000);
-	var $nz = -4000 + getRandomInt(4000);
-
-	var $s = 1.5 + (getRandomInt(10) * .1);
-	var $d = 1 - (getRandomInt(8) * .1);
-
-	TweenMax.set($item, { autoAlpha: 1, delay: $d });
+	
+	TweenMax.set($item, { autoAlpha: 1 });
 	TweenMax.set($block, {
-		z: $nz, rotationY: $nrY, rotationX: $nrX,
-		x: $nx, y: $ny, autoAlpha: 0
+		z: 0, rotationY: $nrY,
+		autoAlpha: 0
 	});
-	TweenMax.to($block, $s, {
-		delay: $d, rotationY: 0, rotationX: 0, z: 0,
+	
+	TweenMax.to($block, 1.5, {
+		rotationY: 0, z: 0,
 		ease: Expo.easeInOut
 	});
-	TweenMax.to($block, $s - 0.5, {
-		delay: $d, x: 0, y: 0, autoAlpha: 1,
+	
+	TweenMax.to($block, 1, {
+		autoAlpha: 1,
 		ease: Expo.easeInOut
 	});
 }
@@ -424,7 +418,11 @@ function animateIn($item, $block) {
 // Looper without mouse interaction
 function looper() {
 	addX += 0.2; // control rotation speed here
-	TweenMax.to(carousel, 1, { rotationY: addX, ease: Quint.easeOut });
+	TweenMax.to(carousel, 1, { 
+		rotationY: addX, 
+		ease: Quint.easeOut,
+		transformOrigin: "50% 50% 0px"
+	});
 	fps.text('Framerate: ' + counter.tick() + '/60 FPS');
 }
 
