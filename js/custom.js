@@ -335,100 +335,34 @@ $(document).ready(function () {
 
 });
 
-// Slider Javascript
 
-// set and cache variables
-var w, container, carousel, item, radius, itemLength, rY, ticker, fps;
-var addX = 0;
 
-// FPS Counter
-var fps_counter = {
-	tick: function () {
-		this.times = this.times.concat(+new Date());
-		var seconds, times = this.times;
-
-		if (times.length > this.span + 1) {
-			times.shift();
-			seconds = (times[times.length - 1] - times[0]) / 1000;
-			return Math.round(this.span / seconds);
-		}
-		else return null;
-	},
-
-	times: [],
-	span: 20
-};
-
-var counter = Object.create(fps_counter);
-
-$(document).ready(init)
-
-function init() {
-	w = $(window);
-	container = $('#contentContainer');
-	carousel = $('#carouselContainer');
-	item = $('.carouselItem');
-	itemLength = item.length;
-	fps = $('#fps');
-	rY = 360 / itemLength;
-	radius = Math.round((250) / Math.tan(Math.PI / itemLength));
-
-	// set container 3d perspective
-	TweenMax.set(container, { perspective: 600 });
-	TweenMax.set(carousel, { z: -(radius) });
-
-	// create carousel items
-	for (var i = 0; i < itemLength; i++) {
-		var $item = item.eq(i);
-		var $block = $item.find('.carouselItemInner');
-
-		TweenMax.set($item, {
-			rotationY: rY * i,
-			z: radius,
-			transformOrigin: "50% 50% " + -radius + "px"
-		});
-
-		animateIn($item, $block);
+document.addEventListener("DOMContentLoaded", () => {
+	const radios = document.querySelectorAll("#slider input[type='radio']");
+	let index = 2; // start from third radio (indexing from 0)
+	const total = radios.length;
+  
+	function updateSlider() {
+	  radios[index].checked = true;
 	}
-
-	// Start looper
-	ticker = setInterval(looper, 1000 / 60);
-}
-
-function animateIn($item, $block) {
-	var $nrY = 360 * getRandomInt(2);
-	
-	TweenMax.set($item, { autoAlpha: 1 });
-	TweenMax.set($block, {
-		z: 0, rotationY: $nrY,
-		autoAlpha: 0
+  
+	// Auto-slide every 3 seconds
+	setInterval(() => {
+	  index = (index + 1) % total;
+	  updateSlider();
+	}, 2000);
+  
+	// Optional: Allow keyboard navigation with arrow keys
+	document.addEventListener("keydown", (e) => {
+	  if (e.key === "ArrowRight") {
+		index = (index + 1) % total;
+		updateSlider();
+	  } else if (e.key === "ArrowLeft") {
+		index = (index - 1 + total) % total;
+		updateSlider();
+	  }
 	});
-	
-	TweenMax.to($block, 1.5, {
-		rotationY: 0, z: 0,
-		ease: Expo.easeInOut
-	});
-	
-	TweenMax.to($block, 1, {
-		autoAlpha: 1,
-		ease: Expo.easeInOut
-	});
-}
-
-// Looper without mouse interaction
-function looper() {
-	addX += 0.2; // control rotation speed here
-	TweenMax.to(carousel, 1, { 
-		rotationY: addX, 
-		ease: Quint.easeOut,
-		transformOrigin: "50% 50% 0px"
-	});
-	fps.text('Framerate: ' + counter.tick() + '/60 FPS');
-}
-
-function getRandomInt(n) {
-	return Math.floor((Math.random() * n) + 1);
-}
+  });
 
 
 // // Slider Javascript
